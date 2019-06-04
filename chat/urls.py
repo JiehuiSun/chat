@@ -9,5 +9,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+    # url('<str:room_name>/', views.room, name='room'),
+    url('(?P<room_name>\w+)/', views.room, name='room'),
     url('', views.index, name='index'),
 ]
