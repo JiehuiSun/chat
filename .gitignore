@@ -70,9 +70,5 @@ docs/
 # PyBuilder
 target/
 
-# Bat files
-migrate.bat
-migrate.sh
-
 # venv
 .venv/
