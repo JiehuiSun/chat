@@ -4,13 +4,15 @@
 # Author: huihui - sunjiehuimail@foxmail.com
 # Filename: consumers.py
 
-from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from .helpers import gen_roomname
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
+        room_name = self.scope['url_route']['kwargs']['room_name']
+        label = gen_roomname(room_name)
+        self.room_group_name = 'chat_%s' % label
 
         # Join room group
         await self.channel_layer.group_add(
@@ -31,6 +33,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        print("*" * 40)
+        print(message)
 
         # Send message to room group
         await self.channel_layer.group_send(

@@ -6,22 +6,42 @@
             <title>Chat Rooms</title>
           </head>
           <body>
-                What chat room would you like to enter?<br/>
-                    <input id="room-name-input" type="text" size="100"/><br/>
-                        <input id="room-name-submit" type="button" value="Enter"/>
+            <table id="chat">
+              <tr>
+                <td><b>roomname</b></td>
 
-                            <script>
-                                      document.querySelector('#room-name-input').focus();
-                                              document.querySelector('#room-name-input').onkeyup = function(e) {
-                                                          if (e.keyCode === 13) {  // enter, return
-                                                                          document.querySelector('#room-name-submit').click();
-                                                                      }
-                                                      };
+              </tr>
+              {% for room in room_list %}
+                <tr>
+                  <td id="{{ room.label }}" class="room">{{ room.room_name }}</td>
+                </tr> 
+              {% endfor %}
+            </table>
+            <br/>
+            What chat room would you like to enter?<br/>
+            <input id="room-name-input" type="text" size="100"/><br/>
+            <input id="room-name-submit" type="button" value="Enter"/>
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-                    var roomName = document.querySelector('#room-name-input').value;
-                    window.location.pathname = '/chat/' + roomName + '/';
-                };
+            <script>
+              document.querySelector('#room-name-input').focus();
+              document.querySelector('#room-name-input').onkeyup = function(e) {
+              if (e.keyCode === 13) {  // enter, return
+                  document.querySelector('#room-name-submit').click();
+              }
+            };
+
+            document.querySelector('#room-name-submit').onclick = function(e) {
+            var roomName = document.querySelector('#room-name-input').value;
+            var roomList = document.querySelector('.room')
+              console.log(roomList)
+              for (var i = 0; i<roomList.lenth; i++){
+                console.log(roomList[i])
+                if (roomList[i].room_name == roomName) {
+                  window.location.pathname = '/chat/' + roomList[i].label + '/';
+                }
+              }
+
+            };
     </script>
   </body>
 </html>
