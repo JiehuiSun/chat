@@ -6,13 +6,14 @@
 
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.db import transaction
 from .helpers import gen_roomname
+from .models import Room, Message
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        room_name = self.scope['url_route']['kwargs']['room_name']
-        label = gen_roomname(room_name)
-        self.room_group_name = 'chat_%s' % label
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'chat_%s' % self.room_name
 
         # Join room group
         await self.channel_layer.group_add(
@@ -33,8 +34,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        print("*" * 40)
-        print(message)
+
+        # db
+        with transaction.atomic():
+            room_obj = Room.objects.filter(label=self.room_name).first()
+            msg_obj = Message.objects.create(room_id=room_obj.id,
+                                             message=message)
 
         # Send message to room group
         await self.channel_layer.group_send(

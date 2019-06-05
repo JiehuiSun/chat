@@ -9,7 +9,7 @@ import json
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.db import transaction
-from .models import Room
+from .models import Room, Message
 from .helpers import gen_roomname
 
 def index(request):
@@ -28,11 +28,18 @@ def room(request, room_name):
     if not room_name:
         return render(request, "chat/index.html", {})
 
+    room_obj = None
     with transaction.atomic():
-        label = gen_roomname(room_name)
-        if not Room.objects.filter(label=label).exists():
-            new_room = Room.objects.create(name=room_name, label=label)
+        if not Room.objects.filter(label=room_name).exists():
+            label = gen_roomname(room_name)
+            room_obj = Room.objects.create(name=room_name, label=label)
+            room_name = label
+    if not room_obj:
+        room_obj = Room.objects.filter(label=room_name).first()
+        msg_obj_list = Message.objects.filter(room_id=room_obj.id).all()
+        msg_list = [i.message for i in msg_obj_list]
     return render(request, 'chat/room.html', {
-                'room_name_json': mark_safe(json.dumps(label))
+                'room_name': mark_safe(json.dumps(room_name)),
+                'room_msg': mark_safe(msg_list)
             })
 

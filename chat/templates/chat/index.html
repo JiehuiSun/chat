@@ -32,12 +32,10 @@
 
             document.querySelector('#room-name-submit').onclick = function(e) {
             var roomName = document.querySelector('#room-name-input').value;
-            var roomList = document.querySelector('.room')
-              console.log(roomList)
-              for (var i = 0; i<roomList.lenth; i++){
-                console.log(roomList[i])
-                if (roomList[i].room_name == roomName) {
-                  window.location.pathname = '/chat/' + roomList[i].label + '/';
+            var roomList = document.getElementsByClassName('room')
+              for (var i = 0; i<roomList.length; i++){
+                if (roomList[i].innerText == roomName) {
+                  window.location.pathname = '/chat/' + roomList[i].id + '/';
                 }
               }
 
