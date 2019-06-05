@@ -36,6 +36,8 @@
               for (var i = 0; i<roomList.length; i++){
                 if (roomList[i].innerText == roomName) {
                   window.location.pathname = '/chat/' + roomList[i].id + '/';
+                }else{
+                  window.location.pathname = '/chat/' + roomName + '/';
                 }
               }
 
