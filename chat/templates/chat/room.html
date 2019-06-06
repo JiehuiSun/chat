@@ -21,7 +21,7 @@ console.log(roomMsg)
 
     var chatSocket = new WebSocket(
                 'ws://' + window.location.host +
-                '/ws/chat/' + roomName + '/' + {{ username }});
+                '/ws/chat/' + roomName + '/' + "{{ username }}");
 
         chatSocket.onmessage = function(e) {
                 var data = JSON.parse(e.data);

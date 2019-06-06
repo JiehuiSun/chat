@@ -34,13 +34,13 @@
             document.querySelector('#room-name-submit').onclick = function(e) {
             var roomName = document.querySelector('#room-name-input').value;
             var roomList = document.getElementsByClassName('room')
+            var username = "{{ username }}"
+            var url = '/chat/' + roomName + '/' + username + "/";
               for (var i = 0; i<roomList.length; i++){
                 if (roomList[i].innerText == roomName) {
-                  window.location.pathname = '/chat/' + roomList[i].id + '/' + {{ username }} + "/";
-                }else{
-                  window.location.pathname = '/chat/' + roomName + '/' + {{ username }} + "/";
-                }
-              }
+                  var url = '/chat/' + roomList[i].id + '/' + username + "/"
+                }              }
+            window.location.pathname = url;
 
             };
     </script>

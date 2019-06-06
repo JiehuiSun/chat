@@ -44,11 +44,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                                              handle=self.username)
 
         # Send message to room group
+        msg = "{0} {1}: {2}".format(self.username,
+                                    msg_obj.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                                    message)
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message
+                'message': msg
             }
         )
 
