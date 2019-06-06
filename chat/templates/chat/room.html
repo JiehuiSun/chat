@@ -5,11 +5,20 @@
         <meta charset="utf-8"/>
             <title>Chat Room</title>
           </head>
+          <style type="text/css">
+            #chat-message-input {
+              width: 800px;
+              height: 200px;
+              border: 1px solid #000;
+            }
+          </style>
           <body>
             <p>Your name: {{ username }} | <a href="/">Logout</a></p>
                 <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
-                    <input id="chat-message-input" type="text" size="100"/><br/>
-                        <input id="chat-message-submit" type="button" value="Send"/>
+                <div class="editor" contenteditable="true" id="chat-message-input">
+                  </div>
+                    <!-- <input id="chat-message-input" type="text" size="100"/><br/> -->
+                    <input id="chat-message-submit" type="button" value="Send"/>
                       </body>
                       <script>
                         var roomMsg = {{ room_msg }};
@@ -42,7 +51,7 @@ console.log(roomMsg)
 
     document.querySelector('#chat-message-submit').onclick = function(e) {
             var messageInputDom = document.querySelector('#chat-message-input');
-            var message = messageInputDom.value;
+            var message = messageInputDom.innerText;
             chatSocket.send(JSON.stringify({
                               'message': message
                                       }));
