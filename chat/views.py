@@ -6,11 +6,12 @@
 
 
 import json
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.utils.safestring import mark_safe
 from django.db import transaction
 from .models import Room, Message
 from .helpers import gen_roomname
+
 
 def index(request):
     room_obj_list = Room.objects.all()
@@ -43,3 +44,16 @@ def room(request, room_name):
                 'room_msg': mark_safe(msg_list)
             })
 
+
+def login(request):
+    return render(request, "chat/login.html", {})
+
+
+def user_login(request):
+    ret = {"code": 0}
+    params = request.POST
+    if not params:
+        ret["code"] = 1
+    elif not params.get("username") or not params.get("password"):
+        ret["code"] = 2
+    return HttpResponse(json.dumps(ret, ensure_ascii=False), content_type = "application/json")

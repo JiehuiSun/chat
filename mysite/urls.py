@@ -23,8 +23,10 @@ Including another URLconf
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
+from chat.views import login
 
 urlpatterns = [
     url('chat/', include('chat.urls')),
     url('admin/', admin.site.urls),
+    url('', login),
 ]
