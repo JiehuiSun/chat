@@ -6,6 +6,7 @@
             <title>Chat Rooms</title>
           </head>
           <body>
+            <p>Your name: {{ username }} | <a href="/">Logout</a></p>
             <table id="chat">
               <tr>
                 <td><b>roomname</b></td>
@@ -35,9 +36,9 @@
             var roomList = document.getElementsByClassName('room')
               for (var i = 0; i<roomList.length; i++){
                 if (roomList[i].innerText == roomName) {
-                  window.location.pathname = '/chat/' + roomList[i].id + '/';
+                  window.location.pathname = '/chat/' + roomList[i].id + '/' + {{ username }} + "/";
                 }else{
-                  window.location.pathname = '/chat/' + roomName + '/';
+                  window.location.pathname = '/chat/' + roomName + '/' + {{ username }} + "/";
                 }
               }
 

@@ -22,10 +22,9 @@
           data:{"username": username, "password": password},
           success:function(data){
 
-          console.log(data)
-
           if (data["code"] == 0){
-            $(location).attr('href', "/chat")
+            var url = "/chat/" + "?username=" + username
+            $(location).attr('href', url)
           }else{
             $("#err-info").text("Username or Password Err")
           }

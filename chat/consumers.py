@@ -13,6 +13,7 @@ from .models import Room, Message
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.username = self.scope['url_route']['kwargs']['username']
         self.room_group_name = 'chat_%s' % self.room_name
 
         # Join room group
@@ -39,7 +40,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         with transaction.atomic():
             room_obj = Room.objects.filter(label=self.room_name).first()
             msg_obj = Message.objects.create(room_id=room_obj.id,
-                                             message=message)
+                                             message=message,
+                                             handle=self.username)
 
         # Send message to room group
         await self.channel_layer.group_send(

@@ -6,6 +6,7 @@
             <title>Chat Room</title>
           </head>
           <body>
+            <p>Your name: {{ username }} | <a href="/">Logout</a></p>
                 <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
                     <input id="chat-message-input" type="text" size="100"/><br/>
                         <input id="chat-message-submit" type="button" value="Send"/>
@@ -14,13 +15,13 @@
                         var roomMsg = {{ room_msg }};
 console.log(roomMsg)
                         for (var i = 0; i<roomMsg.length; i++){
-                          document.querySelector('#chat-log').value += (roomMsg[i] + '\n');
+                          document.querySelector('#chat-log').value += (roomMsg[i]["username"] + " " + roomMsg[i]["datetime"] + ": " + roomMsg[i]["msg"] + '\n');
                         }
                         var roomName = {{ room_name }};
 
     var chatSocket = new WebSocket(
                 'ws://' + window.location.host +
-                        '/ws/chat/' + roomName + '/');
+                '/ws/chat/' + roomName + '/' + {{ username }});
 
         chatSocket.onmessage = function(e) {
                 var data = JSON.parse(e.data);

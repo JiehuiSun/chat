@@ -12,6 +12,6 @@ urlpatterns = [
     # url('<str:room_name>/', views.room, name='room'),
     url(r'^user_login', views.user_login, name='user_login'),
     url(r'^login', views.login, name='login'),
-    url('(?P<room_name>\w+)/', views.room, name='room'),
-    url('', views.index, name='index'),
+    url('(?P<room_name>\w+)/(?P<username>\w+)', views.room, name='room'),
+    url('^$', views.index, name='index'),
 ]

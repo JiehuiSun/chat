@@ -14,6 +14,10 @@ from .helpers import gen_roomname
 
 
 def index(request):
+    username = None
+    if request.GET and request.GET.get("username"):
+        username = request.GET.get("username")
+
     room_obj_list = Room.objects.all()
     room_list = [
         {
@@ -22,10 +26,17 @@ def index(request):
         } for i in room_obj_list
     ]
 
-    return render(request, 'chat/index.html', {"room_list": room_list})
+    ret_data = {
+        "room_list": room_list,
+        "username": username
+    }
+    return render(request, 'chat/index.html', ret_data)
 
 
-def room(request, room_name):
+def room(request, room_name, username):
+    username = None
+    if request and request.GET.get("username"):
+        username = request.GET.get("username")
     if not room_name:
         return render(request, "chat/index.html", {})
 
@@ -38,10 +49,14 @@ def room(request, room_name):
     if not room_obj:
         room_obj = Room.objects.filter(label=room_name).first()
     msg_obj_list = Message.objects.filter(room_id=room_obj.id).all()
-    msg_list = [i.message for i in msg_obj_list]
+    msg_list = [{"msg": i.message,
+                 "username": i.handle,
+                 "datetime": i.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+                 } for i in msg_obj_list]
     return render(request, 'chat/room.html', {
                 'room_name': mark_safe(json.dumps(room_name)),
-                'room_msg': mark_safe(msg_list)
+                'room_msg': mark_safe(msg_list),
+                'username': username,
             })
 
 

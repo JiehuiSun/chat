@@ -11,6 +11,6 @@ from django.conf.urls import url
 from . import consumers
 
 websocket_urlpatterns = [
-    url('ws/chat/(?P<room_name>\w+)/$', consumers.ChatConsumer),
+    url('ws/chat/(?P<room_name>\w+)/(?P<username>\w+)$', consumers.ChatConsumer),
     # path('ws/chat/<str:room_name>)/$', consumers.ChatConsumera),
 ]
