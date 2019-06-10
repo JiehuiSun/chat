@@ -17,6 +17,9 @@
               width: 580px;
               height: 50px;
             }
+            .chat_img{
+              width: 150px;
+            }
 
             .atalk{
               margin:10px; 
@@ -63,7 +66,6 @@
                       <script>
                         var roomMsg = {{ room_msg }};
                         var Words = document.getElementById("words");
-console.log(roomMsg)
                         for (var i = 0; i<roomMsg.length; i++){
                           if (roomMsg[i]["username"] == "{{ username }}"){
                             var chat_div = '<div class="btalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="btalk"><span>' + roomMsg[i]["msg"] +'</span></div>'
@@ -107,10 +109,60 @@ console.log(roomMsg)
     document.querySelector('#chat-message-submit').onclick = function(e) {
             var messageInputDom = document.querySelector('#chat-message-input');
             var message = messageInputDom.innerText;
+            if (message == ""){
+              alert("message not null")
+              return
+            }
             chatSocket.send(JSON.stringify({
                               'message': message
                                       }));
             messageInputDom.innerText = '';
         };
+
+<!-- ##################################### -->
+window.onload = function () {
+  function paste_img(e) {
+    if (e.clipboardData.items) {
+      var ele = e.clipboardData.items
+        for (var i = 0; i < ele.length; ++i) {
+          if (ele[i].kind == 'file' && ele[i].type.indexOf('image/') !== -1) {
+            var blob = ele[i].getAsFile();
+            window.URL = window.URL || window.webkitURL;
+            var blobUrl = window.URL.createObjectURL(blob);
+            var new_img = document.createElement('img');
+            convertImgToBase64(blobUrl, function(base64Img){
+            new_img.setAttribute('src', base64Img);
+            new_img.setAttribute('class', "chat_img");
+            document.getElementById('chat-message-input').appendChild(new_img);
+          });
+        }
+      }
+    } else {
+    alert('您的浏览器不支持粘贴图片功能,请换更高版本浏览器.');
+    }
+  }
+  document.getElementById('chat-message-input').onpaste = function () {
+    paste_img(event);
+    return false;
+  };
+}
+function convertImgToBase64(url, callback, outputFormat){
+  var canvas = document.createElement('CANVAS'),
+  ctx = canvas.getContext('2d'),
+  img = new Image;
+  img.crossOrigin = 'Anonymous';
+  img.onload = function(){
+  canvas.height = img.height;
+  canvas.width = img.width;
+  ctx.drawImage(img,0,0);
+  var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+  callback.call(this, dataURL);
+  canvas = null;
+};
+img.src = url;
+}
+
+
+
                       </script>
                     </html>
