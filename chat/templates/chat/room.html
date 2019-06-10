@@ -7,25 +7,72 @@
           </head>
           <style type="text/css">
             #chat-message-input {
-              width: 800px;
-              height: 200px;
+              width: 580px;
+              height: 150px;
               border: 1px solid #000;
+              margin:10px auto 0;
             }
+            #send {
+              margin:10px auto 0;
+              width: 580px;
+              height: 50px;
+            }
+
+            .atalk{
+              margin:10px; 
+            }
+            .atalk span{
+              display:inline-block;
+              background:#0181cc;
+              border-radius:10px;
+              color:#fff;
+              padding:5px 10px;
+            }
+            .btalk{
+              margin:10px;
+              text-align:right;
+            }
+            .btalk span{
+              display:inline-block;
+              background:#ef8201;
+              border-radius:10px;
+              color:#fff;
+              padding:5px 10px;
+            }
+            .talk_show{
+              width:580px;
+              height:320px;
+              border:1px solid #666;
+              background:#fff;
+              margin:10px auto 0;
+              overflow:auto;
+            }
+
           </style>
           <body>
             <p>Your name: {{ username }} | <a href="/">Logout</a></p>
-                <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
+                <!-- <textarea id="chat-log" cols="100" rows="20"></textarea><br/> -->
+                <div class="talk_show" id="words"></div>
                 <div class="editor" contenteditable="true" id="chat-message-input">
-                  </div>
                     <!-- <input id="chat-message-input" type="text" size="100"/><br/> -->
-                    <input id="chat-message-submit" type="button" value="Send"/>
+                  </div>
+                  <div id="send">
+                    <input style="float:right" id="chat-message-submit" type="button" value="Send"/>
+                    </div>
                       </body>
                       <script>
                         var roomMsg = {{ room_msg }};
+                        var Words = document.getElementById("words");
 console.log(roomMsg)
                         for (var i = 0; i<roomMsg.length; i++){
-                          document.querySelector('#chat-log').value += (roomMsg[i]["username"] + " " + roomMsg[i]["datetime"] + ": " + roomMsg[i]["msg"] + '\n');
+                          if (roomMsg[i]["username"] == "{{ username }}"){
+                            var chat_div = '<div class="btalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="btalk"><span>' + roomMsg[i]["msg"] +'</span></div>'
+                          }else{
+                            var chat_div = '<div class="atalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="atalk"><span>' + roomMsg[i]["msg"] +'</span></div>'
+                          }
+                          Words.innerHTML = Words.innerHTML + chat_div;
                         }
+                        Words.scrollTop = Words.scrollHeight;
                         var roomName = {{ room_name }};
 
     var chatSocket = new WebSocket(
@@ -34,8 +81,16 @@ console.log(roomMsg)
 
         chatSocket.onmessage = function(e) {
                 var data = JSON.parse(e.data);
-                var message = data['message'];
-                document.querySelector('#chat-log').value += (message + '\n');
+                <!-- var message = data['message']; -->
+                <!-- document.querySelector('#chat-log').value += (message + '\n'); -->
+                var Words = document.getElementById("words");
+                if (data["username"] == "{{ username }}"){
+                  var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + data["message"] +'</span></div>'
+                }else{
+                  var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + data["message"] +'</span></div>'
+                }
+                Words.innerHTML = Words.innerHTML + chat_div;
+                Words.scrollTop = Words.scrollHeight;
             };
 
     chatSocket.onclose = function(e) {
@@ -55,7 +110,7 @@ console.log(roomMsg)
             chatSocket.send(JSON.stringify({
                               'message': message
                                       }));
-            messageInputDom.value = '';
+            messageInputDom.innerText = '';
         };
                       </script>
                     </html>
