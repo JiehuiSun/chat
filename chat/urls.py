@@ -10,8 +10,10 @@ from . import views
 
 urlpatterns = [
     # url('<str:room_name>/', views.room, name='room'),
+    url(r'^image/(?P<filename>\w+)', views.image, name='image'),
     url(r'^user_login', views.user_login, name='user_login'),
     url(r'^login', views.login, name='login'),
     url('(?P<room_name>\w+)/(?P<username>\w+)', views.room, name='room'),
     url('^$', views.index, name='index'),
+    url(r'^upload', views.upload, name='upload'),
 ]

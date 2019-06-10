@@ -5,6 +5,7 @@
         <meta charset="utf-8"/>
             <title>Chat Room</title>
           </head>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
           <style type="text/css">
             #chat-message-input {
               width: 580px;
@@ -19,6 +20,9 @@
             }
             .chat_img{
               width: 150px;
+            }
+            .msg_img{
+              width: 100px;
             }
 
             .atalk{
@@ -64,13 +68,30 @@
                     </div>
                       </body>
                       <script>
+                      function convertBase64UrlToBlob(urlData){
+                          var bytes=window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte  
+                          //处理异常,将ascii码小于0的转换为大于0
+                          var ab = new ArrayBuffer(bytes.length);
+                          var ia = new Uint8Array(ab);
+                          for (var i = 0; i < bytes.length; i++) {
+                                  ia[i] = bytes.charCodeAt(i);
+                              }
+                              return new Blob( [ab] , {type : 'image/png'});  
+                      }
+
                         var roomMsg = {{ room_msg }};
                         var Words = document.getElementById("words");
                         for (var i = 0; i<roomMsg.length; i++){
                           if (roomMsg[i]["username"] == "{{ username }}"){
-                            var chat_div = '<div class="btalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="btalk"><span>' + roomMsg[i]["msg"] +'</span></div>'
+                            if (roomMsg[i]["msg"].split(",")[0] == "file"){
+                              var chat_div = '<div class="btalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="btalk"><img class="msg_img" src="' + roomMsg[i]["msg"].split(",")[1] + '"></div>'
+                            }else{
+                              var chat_div = '<div class="btalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="btalk"><span>' + roomMsg[i]["msg"] +'</span></div>'}
                           }else{
-                            var chat_div = '<div class="atalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="atalk"><span>' + roomMsg[i]["msg"] +'</span></div>'
+                            if (roomMsg[i]["msg"].split(",")[0] == "file"){
+                              var chat_div = '<div class="atalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="atalk"><img class="msg_img" src="' + roomMsg[i]["msg"].split(",")[1] + '"></div>'
+                            }else{
+                              var chat_div = '<div class="atalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="atalk"><span>' + roomMsg[i]["msg"] +'</span></div>'}
                           }
                           Words.innerHTML = Words.innerHTML + chat_div;
                         }
@@ -87,9 +108,15 @@
                 <!-- document.querySelector('#chat-log').value += (message + '\n'); -->
                 var Words = document.getElementById("words");
                 if (data["username"] == "{{ username }}"){
-                  var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + data["message"] +'</span></div>'
+                  if (data["message"].split(",")[0] == "file"){
+                    var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
+                  }else{
+                    var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + data["message"] +'</span></div>'}
                 }else{
-                  var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + data["message"] +'</span></div>'
+                  if (data["message"].split(",")[0] == "file"){
+                    var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
+                  }else{
+                    var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + data["message"] +'</span></div>'}
                 }
                 Words.innerHTML = Words.innerHTML + chat_div;
                 Words.scrollTop = Words.scrollHeight;
@@ -109,13 +136,45 @@
     document.querySelector('#chat-message-submit').onclick = function(e) {
             var messageInputDom = document.querySelector('#chat-message-input');
             var message = messageInputDom.innerText;
-            if (message == ""){
+            if (message == "" && document.querySelector(".chat_img").length == 0){
               alert("message not null")
               return
             }
+            <!-- upload file-->
+            var form=document.forms[0];
+            var formData = new FormData(form);
+            var base64Codes_list = document.getElementsByClassName("chat_img");
+            for (var i = 0; i<base64Codes_list.length; i++) {
+              var base64Codes = base64Codes_list[i].src
+              formData.append("file",convertBase64UrlToBlob(base64Codes));
+              $.ajax({
+                url:"/chat/upload",
+                type:"POST",
+                data: formData,
+                dataType: "text",
+                processData : false,
+                contentType : false,
+                success:function(data){
+                var data = JSON.parse(data)
+
+                  if (data["code"] == 0){
+                    var data = data["data"]
+                    var filePath = data["file_path"]
+                    var message = "file," + filePath
+            chatSocket.send(JSON.stringify({
+                              'message': "file," + filePath
+                                      }));
+                  }else{
+                    return
+                  }
+                }
+              })
+            }
+
+            if (message){
             chatSocket.send(JSON.stringify({
                               'message': message
-                                      }));
+                                      }));}
             messageInputDom.innerText = '';
         };
 
