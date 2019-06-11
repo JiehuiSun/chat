@@ -1,12 +1,125 @@
 <!-- chat/templates/chat/room.html -->
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
   <head>
         <meta charset="utf-8"/>
             <title>Chat Room</title>
           </head>
+
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<!-- chat -->
+
+  <link rel="shortcut icon" href="/static/weibo/jquery-emoticons/public/image/favicon.png">
+  <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/cssreset-min.css">
+  <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/common.css">
+  <style type="text/css">
+  .emoticons{
+  width: 525px;
+  margin-bottom:20px;
+  }
+  .emoticons .publisher{
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px dotted #dbdbdb;
+  }
+  .emoticons .publisher textarea{
+  width: 500px;
+  height: 140px;
+  padding: 5px 10px;
+  border: 1px solid #dbdbdb;
+  resize: none;
+  }
+  .trigger{
+  font-size: 24px;
+  font-weight: bold;
+  color: #666;
+  }
+  .emoticons .publisher .trigger-active{
+  color: #eb7350;
+  }
+  .emoticons .result{
+  padding: 10px 15px;
+  border: 1px dotted #dbdbdb;
+  margin-top: 10px;
+  height: 150px;
+  line-height: 24px;
+  }
+  .emoticons .result img{
+  vertical-align: middle;
+  }
+
+  .widget-layer{
+  position: relative;
+  width: 410px;
+  margin-top: 8px;
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 2px;
+  }
+  .widget-layer:before{
+  position: absolute;
+  top: -16px;
+  left: 2px;
+  display: block;
+  content: '';
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-bottom-color: #dbdbdb;
+  }
+  .widget-layer:after{
+  position: absolute;
+  top: -15px;
+  left: 2px;
+  display: block;
+  content: '';
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  border-bottom-color: #f0f0f0;
+  }
+  .widget-layer .widget-tool{
+  height: 28px;
+  background: #f0f0f0;
+  }
+  .widget-layer .widget-close{
+  float: right;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  font-family: Arial;
+  }
+  .widget-layer ul{
+  width: 372px;
+  margin: 0 auto;
+  padding: 15px 5px 20px;
+  overflow: hidden;
+  }
+  .widget-layer li{
+  position: relative;
+  z-index: 8;
+  float: left;
+  width: 22px;
+  height: 22px;
+  padding: 4px;
+  margin-left: -1px;
+  margin-top: -1px;
+  border: 1px solid #e8e8e8;
+  cursor: pointer;
+  }
+  .widget-layer li:hover{
+  z-index: 9;
+  border-color: #eb7350;
+  }
+  </style>
+  <!-- <script type="text/javascript" src="/static/weibo/jquery-emoticons/public/script/jquery.min.js"></script> -->
+  <!-- <script type="text/javascript" src="/static/weibo/jquery-emoticons/code/jquery.emoticons.js"></script> -->
+
+
           <style type="text/css">
+
             #chat-message-input {
               width: 580px;
               height: 150px;
@@ -64,8 +177,189 @@
                     <!-- <input id="chat-message-input" type="text" size="100"/><br/> -->
                   </div>
                   <div id="send">
+                  <span><a class="trigger" href="javascript:;">☺</a></span>
+
+<script>
+        var defaults = {
+            'prefix':'widget',
+            'publisherCls':'publisher',
+            'triggerCls':'trigger',
+            'activeCls':'active',
+            'path':'/static/weibo/jquery-emoticons/public/image/',
+            'list':[
+                {'title':'微笑','url':'weixiao.gif'},
+                {'title':'嘻嘻','url':'xixi.gif'},
+                {'title':'哈哈','url':'haha.gif'},
+                {'title':'可爱','url':'keai.gif'},
+                {'title':'可怜','url':'kelian.gif'},
+                {'title':'挖鼻','url':'wabi.gif'},
+                {'title':'吃惊','url':'chijing.gif'},
+                {'title':'害羞','url':'haixiu.gif'},
+                {'title':'挤眼','url':'jiyan.gif'},
+                {'title':'闭嘴','url':'bizui.gif'},
+                {'title':'鄙视','url':'bishi.gif'},
+                {'title':'爱你','url':'aini.gif'},
+                {'title':'泪','url':'lei.gif'},
+                {'title':'偷笑','url':'touxiao.gif'},
+                {'title':'亲亲','url':'qinqin.gif'},
+                {'title':'生病','url':'shengbing.gif'},
+                {'title':'太开心','url':'taikaixin.gif'},
+                {'title':'白眼','url':'baiyan.gif'},
+                {'title':'右哼哼','url':'youhengheng.gif'},
+                {'title':'左哼哼','url':'zuohengheng.gif'},
+                {'title':'嘘','url':'xu.gif'},
+                {'title':'衰','url':'shuai.gif'},
+                {'title':'吐','url':'tu.gif'},
+                {'title':'哈欠','url':'haqian.gif'},
+                {'title':'抱抱','url':'baobao.gif'},
+                {'title':'怒','url':'nu.gif'},
+                {'title':'疑问','url':'yiwen.gif'},
+                {'title':'馋嘴','url':'chanzui.gif'},
+                {'title':'拜拜','url':'baibai.gif'},
+                {'title':'思考','url':'sikao.gif'},
+                {'title':'汗','url':'han.gif'},
+                {'title':'困','url':'kun.gif'},
+                {'title':'睡','url':'shui.gif'},
+                {'title':'钱','url':'qian.gif'},
+                {'title':'失望','url':'shiwang.gif'},
+                {'title':'酷','url':'ku.gif'},
+                {'title':'色','url':'se.gif'},
+                {'title':'哼','url':'heng.gif'},
+                {'title':'鼓掌','url':'guzhang.gif'},
+                {'title':'晕','url':'yun.gif'},
+                {'title':'悲伤','url':'beishang.gif'},
+                {'title':'抓狂','url':'zhuakuang.gif'},
+                {'title':'黑线','url':'heixian.gif'},
+                {'title':'阴险','url':'yinxian.gif'},
+                {'title':'怒骂','url':'numa.gif'},
+                {'title':'互粉','url':'hufen.gif'},
+                {'title':'书呆子','url':'shudaizi.gif'},
+                {'title':'愤怒','url':'fennu.gif'},
+                {'title':'感冒','url':'ganmao.gif'},
+                {'title':'心','url':'xin.gif'},
+                {'title':'伤心','url':'shangxin.gif'},
+                {'title':'猪','url':'zhu.gif'},
+                {'title':'熊猫','url':'xiongmao.gif'},
+                {'title':'兔子','url':'tuzi.gif'},
+                {'title':'OK','url':'ok.gif'},
+                {'title':'耶','url':'ye.gif'},
+                {'title':'GOOD','url':'good.gif'},
+                {'title':'NO','url':'no.gif'},
+                {'title':'赞','url':'zan.gif'},
+                {'title':'来','url':'lai.gif'},
+                {'title':'弱','url':'ruo.gif'},
+                {'title':'草泥马','url':'caonima.gif'},
+                {'title':'神马','url':'shenma.gif'},
+                {'title':'囧','url':'jiong.gif'},
+                {'title':'浮云','url':'fuyun.gif'},
+                {'title':'给力','url':'geili.gif'},
+                {'title':'围观','url':'weiguan.gif'},
+                {'title':'威武','url':'weiwu.gif'},
+                {'title':'话筒','url':'huatong.gif'},
+                {'title':'蜡烛','url':'lazhu.gif'},
+                {'title':'蛋糕','url':'dangao.gif'},
+                {'title':'发红包','url':'fahongbao.gif'}
+            ],
+            'top':0,
+            'left':0,
+            'onShow':function(){},
+            'onHide':function(){},
+            'onSelect':function(){}
+        };
+        var options = $.extend({}, defaults);
+
+    document.querySelector('.trigger').onclick = function(e) {
+      <!-- 判断是否已经展开表情 -->
+        console.log($(".widget-panel").find("ul").length)
+        if ($(".widget-panel").find("ul").length == 0){
+      var ul = $("<ul>");
+      for (i=0; i<options.list.length; i++) {
+        var img = $("<img>");
+        img.attr("src", options.path + options.list[i]["url"]);
+        var li = $("<li>");
+        li.attr("class", "emoji-img");
+        li.attr("title", options.list[i]["title"]);
+        li.bind("click", function(){
+            var emoji_chat = $("<img>")
+            emoji_chat.attr("src", this.children[0].src)
+            emoji_chat.attr("title", this.children[0].title)
+            $("#chat-message-input").append(emoji_chat)
+            })
+        li.append(img)
+        ul.append(li)
+
+      }
+      var layer = $("<div>")
+      var panel = $("<div>")
+      var tool = $("<div>")
+      var close_x = $("<a>")
+      close_x.html = "X"
+      close_x.attr("class", "widget-close")
+      close_x.attr("href", "javascript:;")
+      close_x.attr("title", "关闭")
+
+      tool.append(close_x)
+      tool.attr("class", "widget-tool")
+      panel.append(ul)
+      panel.attr("class", "widget-panel")
+      layer.attr("class", "widget-layer")
+      layer.append(tool)
+      layer.append(panel)
+      $(".emoji").append(layer)
+      }else{
+          $(".widget-layer").remove()
+    }
+    };
+    <!-- $(".emoji-img").live("click", function() { -->
+      <!-- console.log("aaaaaaa") -->
+
+        <!-- }); -->
+
+    <!-- $(".emoji-img").on("click", "img" add_emoji); -->
+
+    <!-- function add_emoji() { -->
+      <!-- console.log("aaaaaaa") -->
+      <!-- var emoji = this.title; -->
+
+    <!-- }; -->
+
+        </script>
+
                     <input style="float:right" id="chat-message-submit" type="button" value="Send"/>
+                    <div class="emoji">
                     </div>
+                    </div>
+
+<!-- #### -->
+<!-- <div class="header"> -->
+
+<!-- </div> -->
+<!-- <div class="main"> -->
+<!-- <div class="emoticons"> -->
+<!-- <div class="publisher"> -->
+<!-- <p><textarea name="content"></textarea></p> -->
+<!-- <p><a class="trigger" href="javascript:;">☺</a></p> -->
+<!-- </div> -->
+<!-- <div style="text-align:right;"><button id="format">解析</button></div> -->
+<!-- <div id="result" class="result"></div> -->
+<!-- </div> -->
+
+<script>
+
+
+<!-- $.emoticons({ -->
+<!-- 'activeCls':'trigger-active' -->
+<!-- },function(api){ -->
+<!-- var $content = $('textarea[name="content"]'); -->
+<!-- var $content = $('div[class="editor"]'); -->
+<!-- var $result = $('#result'); -->
+<!-- $('#format').click(function(){ -->
+<!-- $result.html(api.format($content.val())); -->
+                                    <!-- }); -->
+                    <!-- }); -->
+</script>
+</div>
+
                       </body>
                       <script>
                       function convertBase64UrlToBlob(urlData){
@@ -220,7 +514,6 @@ function convertImgToBase64(url, callback, outputFormat){
 };
 img.src = url;
 }
-
 
 
                       </script>
