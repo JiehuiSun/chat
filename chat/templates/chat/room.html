@@ -270,7 +270,6 @@
 
     document.querySelector('.trigger').onclick = function(e) {
       <!-- 判断是否已经展开表情 -->
-        console.log($(".widget-panel").find("ul").length)
         if ($(".widget-panel").find("ul").length == 0){
       var ul = $("<ul>");
       for (i=0; i<options.list.length; i++) {
@@ -280,9 +279,11 @@
         li.attr("class", "emoji-img");
         li.attr("title", options.list[i]["title"]);
         li.bind("click", function(){
-            var emoji_chat = $("<img>")
-            emoji_chat.attr("src", this.children[0].src)
-            emoji_chat.attr("title", this.children[0].title)
+            <!-- 暂时不直接展示表情 -->
+            <!-- var emoji_chat = $("<img>") -->
+            <!-- emoji_chat.attr("src", this.children[0].src) -->
+            <!-- emoji_chat.attr("title", this.children[0].title) -->
+            var emoji_chat = "[/" + this.title + "]"
             $("#chat-message-input").append(emoji_chat)
             })
         li.append(img)
@@ -376,17 +377,8 @@
                         var roomMsg = {{ room_msg }};
                         var Words = document.getElementById("words");
                         for (var i = 0; i<roomMsg.length; i++){
-                          if (roomMsg[i]["username"] == "{{ username }}"){
-                            if (roomMsg[i]["msg"].split(",")[0] == "file"){
-                              var chat_div = '<div class="btalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="btalk"><img class="msg_img" src="' + roomMsg[i]["msg"].split(",")[1] + '"></div>'
-                            }else{
-                              var chat_div = '<div class="btalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="btalk"><span>' + roomMsg[i]["msg"] +'</span></div>'}
-                          }else{
-                            if (roomMsg[i]["msg"].split(",")[0] == "file"){
-                              var chat_div = '<div class="atalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="atalk"><img class="msg_img" src="' + roomMsg[i]["msg"].split(",")[1] + '"></div>'
-                            }else{
-                              var chat_div = '<div class="atalk"><b>' + roomMsg[i]["username"] + "</b> " + roomMsg[i]["datetime"] + '</div><div class="atalk"><span>' + roomMsg[i]["msg"] +'</span></div>'}
-                          }
+                          roomMsg[i]["message"] = roomMsg[i]["msg"];
+                          var chat_div = gen_chat_div(roomMsg[i]);
                           Words.innerHTML = Words.innerHTML + chat_div;
                         }
                         Words.scrollTop = Words.scrollHeight;
@@ -401,17 +393,7 @@
                 <!-- var message = data['message']; -->
                 <!-- document.querySelector('#chat-log').value += (message + '\n'); -->
                 var Words = document.getElementById("words");
-                if (data["username"] == "{{ username }}"){
-                  if (data["message"].split(",")[0] == "file"){
-                    var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
-                  }else{
-                    var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + data["message"] +'</span></div>'}
-                }else{
-                  if (data["message"].split(",")[0] == "file"){
-                    var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
-                  }else{
-                    var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + data["message"] +'</span></div>'}
-                }
+                var chat_div = gen_chat_div(data);
                 Words.innerHTML = Words.innerHTML + chat_div;
                 Words.scrollTop = Words.scrollHeight;
             };
@@ -515,6 +497,70 @@ function convertImgToBase64(url, callback, outputFormat){
 img.src = url;
 }
 
+function handle_emoji(msg){
+    chat_msg = "";
+    for (var a=0; a<msg.length; a++){
+      var msg_split = msg[a].split("]")
+        if (msg_split.length == 1){
+          var chat_msg = chat_msg + msg[a]
+        }else{
+          var null_count = 0;
+          console.log("msg: ", msg)
+          console.log("msg_split: ", msg_split)
+          for (var j=0; j<msg_split.length; j++){
+            console.log("aaa: ", msg_split[j])
+            console.log("index: ", j)
+            <!-- 判断是否是表情 -->
+            var emoji_chat_img = ""
+            var is_emoji = 0;
+            for (var k=0; k<options.list.length; k++) {
+              if (options.list[k].title == msg_split[j]){
+                var is_emoji = 1;
+                var emoji_chat_img = "<img src='" + options.path + options.list[k]["url"] + "'>"
+              }else{
+              }
+            }
+            if (emoji_chat_img){
+              var chat_msg = chat_msg + emoji_chat_img;
+            }else{
+              if (j != msg_split.length - 1){
+                var chat_msg = chat_msg + msg_split[j] + "]";
+              }
+            }
+          }
+        }
+    }
+    return chat_msg
+}
+
+function gen_chat_div(data){
+  if (data["username"] == "{{ username }}"){
+    if (data["message"].split(",")[0] == "file"){
+      var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
+    }else{
+      var msg = data["message"].split("[/");
+      if (msg.length == 1){
+        var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + data["message"] +'</span></div>'
+      }else{
+        chat_msg = handle_emoji(msg)
+        var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + chat_msg +'</span></div>'
+      }
+    }
+  }else{
+    if (data["message"].split(",")[0] == "file"){
+      var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
+    }else{
+      var msg = data["message"].split("[/");
+      if (msg.length == 1){
+        var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + data["message"] +'</span></div>'
+      }else{
+        chat_msg = handle_emoji(msg)
+          var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + chat_msg +'</span></div>'
+      }
+    }
+  }
+  return chat_div
+}
 
                       </script>
                     </html>
