@@ -1,122 +1,112 @@
-<!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-{% load staticfiles %}
 <html>
-  <head>
-        <meta charset="utf-8"/>
-            <title>Chat Room</title>
-          </head>
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Chat Room
+        </title>
+        <link rel="shortcut icon" href="/static/weibo/jquery-emoticons/public/image/favicon.png">
+        <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/cssreset-min.css">
+        <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/common.css">
+        <style type="text/css">
+.emoticons{
+        width: 525px;
+        margin-bottom:20px;
+        }
+        .emoticons .publisher{
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px dotted #dbdbdb;
+        }
+        .emoticons .publisher textarea{
+        width: 500px;
+        height: 140px;
+        padding: 5px 10px;
+        border: 1px solid #dbdbdb;
+        resize: none;
+        }
+        .trigger{
+        font-size: 24px;
+        font-weight: bold;
+        color: #666;
+        }
+        .emoticons .publisher .trigger-active{
+        color: #eb7350;
+        }
+        .emoticons .result{
+        padding: 10px 15px;
+        border: 1px dotted #dbdbdb;
+        margin-top: 10px;
+        height: 150px;
+        line-height: 24px;
+        }
+        .emoticons .result img{
+        vertical-align: middle;
+        }
 
-    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
-<!-- chat -->
-
-  <link rel="shortcut icon" href="/static/weibo/jquery-emoticons/public/image/favicon.png">
-  <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/cssreset-min.css">
-  <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/common.css">
-  <style type="text/css">
-  .emoticons{
-  width: 525px;
-  margin-bottom:20px;
-  }
-  .emoticons .publisher{
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px dotted #dbdbdb;
-  }
-  .emoticons .publisher textarea{
-  width: 500px;
-  height: 140px;
-  padding: 5px 10px;
-  border: 1px solid #dbdbdb;
-  resize: none;
-  }
-  .trigger{
-  font-size: 24px;
-  font-weight: bold;
-  color: #666;
-  }
-  .emoticons .publisher .trigger-active{
-  color: #eb7350;
-  }
-  .emoticons .result{
-  padding: 10px 15px;
-  border: 1px dotted #dbdbdb;
-  margin-top: 10px;
-  height: 150px;
-  line-height: 24px;
-  }
-  .emoticons .result img{
-  vertical-align: middle;
-  }
-
-  .widget-layer{
-  position: relative;
-  width: 410px;
-  margin-top: 8px;
-  background: #fff;
-  border: 1px solid #dbdbdb;
-  border-radius: 2px;
-  }
-  .widget-layer:before{
-  position: absolute;
-  top: -16px;
-  left: 2px;
-  display: block;
-  content: '';
-  width: 0;
-  height: 0;
-  border: 8px solid transparent;
-  border-bottom-color: #dbdbdb;
-  }
-  .widget-layer:after{
-  position: absolute;
-  top: -15px;
-  left: 2px;
-  display: block;
-  content: '';
-  width: 0;
-  height: 0;
-  border: 8px solid transparent;
-  border-bottom-color: #f0f0f0;
-  }
-  .widget-layer .widget-tool{
-  height: 28px;
-  background: #f0f0f0;
-  }
-  .widget-layer .widget-close{
-  float: right;
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-  text-align: center;
-  font-family: Arial;
-  }
-  .widget-layer ul{
-  width: 372px;
-  margin: 0 auto;
-  padding: 15px 5px 20px;
-  overflow: hidden;
-  }
-  .widget-layer li{
-  position: relative;
-  z-index: 8;
-  float: left;
-  width: 22px;
-  height: 22px;
-  padding: 4px;
-  margin-left: -1px;
-  margin-top: -1px;
-  border: 1px solid #e8e8e8;
-  cursor: pointer;
-  }
-  .widget-layer li:hover{
-  z-index: 9;
-  border-color: #eb7350;
-  }
-  </style>
-
-
-          <style type="text/css">
+        .widget-layer{
+        position: relative;
+        width: 410px;
+        margin-top: 8px;
+        background: #fff;
+        border: 1px solid #dbdbdb;
+        border-radius: 2px;
+        }
+        .widget-layer:before{
+        position: absolute;
+        top: -16px;
+        left: 2px;
+        display: block;
+        content: '';
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-bottom-color: #dbdbdb;
+        }
+        .widget-layer:after{
+        position: absolute;
+        top: -15px;
+        left: 2px;
+        display: block;
+        content: '';
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-bottom-color: #f0f0f0;
+        }
+        .widget-layer .widget-tool{
+        height: 28px;
+        background: #f0f0f0;
+        }
+        .widget-layer .widget-close{
+        float: right;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        font-family: Arial;
+        }
+        .widget-layer ul{
+        width: 372px;
+        margin: 0 auto;
+        padding: 15px 5px 20px;
+        overflow: hidden;
+        }
+        .widget-layer li{
+        position: relative;
+        z-index: 8;
+        float: left;
+        width: 22px;
+        height: 22px;
+        padding: 4px;
+        margin-left: -1px;
+        margin-top: -1px;
+        border: 1px solid #e8e8e8;
+        cursor: pointer;
+        }
+        .widget-layer li:hover{
+        z-index: 9;
+        border-color: #eb7350;
+        }
 
             #chat-message-input {
               width: 580px;
@@ -166,18 +156,24 @@
               overflow:auto;
             }
 
-          </style>
-          <body>
-            <p>Your name: {{ username }} | <a href="/">Logout</a></p>
-                <!-- <textarea id="chat-log" cols="100" rows="20"></textarea><br/> -->
-                <div class="talk_show" id="words"></div>
-                <div class="editor" contenteditable="true" id="chat-message-input">
-                    <!-- <input id="chat-message-input" type="text" size="100"/><br/> -->
-                  </div>
-                  <div id="send">
-                  <span><a class="trigger" href="javascript:;">☺</a></span>
+        </style>
+    </head>
+    <body>
+        {% load staticfiles %} <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js" type="text/javascript">
+</script><!-- chat -->
+        <p>
+            Your name: {{ username }} | <a href="/">Logout</a>
+        </p><!-- <textarea id="chat-log" cols="100" rows="20"></textarea><br/> -->
+        <div class="talk_show" id="words"></div>
+        <div class="editor" contenteditable="true" id="chat-message-input">
+            <!-- <input id="chat-message-input" type="text" size="100"/><br/> -->
+        </div>
+        <div id="send">
+            <span><a class="trigger" href="javascript:;">☺</a></span> <input style="float:right" id="chat-message-submit" type="button" value="Send">
+            <div class="emoji"></div>
+        </div><script type="text/javascript">
 
-<script>
+        <!-- emoji -->
         var defaults = {
             'prefix':'widget',
             'publisherCls':'publisher',
@@ -266,61 +262,45 @@
         };
         var options = $.extend({}, defaults);
 
-    document.querySelector('.trigger').onclick = function(e) {
-      <!-- 判断是否已经展开表情 -->
+        document.querySelector('.trigger').onclick = function(e) {
+        <!-- 判断是否已经展开表情 -->
         if ($(".widget-panel").find("ul").length == 0){
-      var ul = $("<ul>");
-      for (i=0; i<options.list.length; i++) {
+        var ul = $("<ul>");
+        for (i=0; i<options.list.length; i++) {
         var img = $("<img>");
         img.attr("src", options.path + options.list[i]["url"]);
         var li = $("<li>");
         li.attr("class", "emoji-img");
         li.attr("title", options.list[i]["title"]);
         li.bind("click", function(){
-            <!-- 暂时不直接展示表情 -->
-            <!-- var emoji_chat = $("<img>") -->
-            <!-- emoji_chat.attr("src", this.children[0].src) -->
-            <!-- emoji_chat.attr("title", this.children[0].title) -->
             var emoji_chat = "[/" + this.title + "]"
             $("#chat-message-input").append(emoji_chat)
             })
         li.append(img)
         ul.append(li)
 
-      }
-      var layer = $("<div>")
-      var panel = $("<div>")
-      var tool = $("<div>")
-      var close_x = $("<a>")
-      close_x.html = "X"
-      close_x.attr("class", "widget-close")
-      close_x.attr("href", "javascript:;")
-      close_x.attr("title", "关闭")
+        }
+        var layer = $("<div>")
+        var panel = $("<div>")
+        var tool = $("<div>")
+        var close_x = $("<a>")
+        close_x.html = "X"
+        close_x.attr("class", "widget-close")
+        close_x.attr("href", "javascript:;")
+        close_x.attr("title", "关闭")
 
-      tool.append(close_x)
-      tool.attr("class", "widget-tool")
-      panel.append(ul)
-      panel.attr("class", "widget-panel")
-      layer.attr("class", "widget-layer")
-      layer.append(tool)
-      layer.append(panel)
-      $(".emoji").append(layer)
-      }else{
+        tool.append(close_x)
+        tool.attr("class", "widget-tool")
+        panel.append(ul)
+        panel.attr("class", "widget-panel")
+        layer.attr("class", "widget-layer")
+        layer.append(tool)
+        layer.append(panel)
+        $(".emoji").append(layer)
+        }else{
           $(".widget-layer").remove()
-    }
-    };
-
-        </script>
-
-                    <input style="float:right" id="chat-message-submit" type="button" value="Send"/>
-                    <div class="emoji">
-                    </div>
-                    </div>
-
-</div>
-
-                      </body>
-                      <script>
+        }
+        };
                       function convertBase64UrlToBlob(urlData){
                           var bytes=window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte  
                           //处理异常,将ascii码小于0的转换为大于0
@@ -342,7 +322,7 @@
                         Words.scrollTop = Words.scrollHeight;
                         var roomName = {{ room_name }};
 
-    var chatSocket = new WebSocket(
+        var chatSocket = new WebSocket(
                 'ws://' + window.location.host +
                 '/ws/chat/' + roomName + '/' + "{{ username }}");
 
@@ -356,18 +336,18 @@
                 Words.scrollTop = Words.scrollHeight;
             };
 
-    chatSocket.onclose = function(e) {
+        chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
-    document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
                 if (e.keyCode === 13) {  // enter, return
                             document.querySelector('#chat-message-submit').click();
                         }
             };
 
-    document.querySelector('#chat-message-submit').onclick = function(e) {
+        document.querySelector('#chat-message-submit').onclick = function(e) {
             var messageInputDom = document.querySelector('#chat-message-input');
             var message = messageInputDom.innerText;
             if (message == "" && document.querySelector(".chat_img").length == 0){
@@ -412,11 +392,11 @@
             messageInputDom.innerText = '';
         };
 
-<!-- ##################################### -->
-window.onload = function () {
-  function paste_img(e) {
-    if (e.clipboardData.items) {
-      var ele = e.clipboardData.items
+        <!-- ##################################### -->
+        window.onload = function () {
+        function paste_img(e) {
+        if (e.clipboardData.items) {
+        var ele = e.clipboardData.items
         for (var i = 0; i < ele.length; ++i) {
           if (ele[i].kind == 'file' && ele[i].type.indexOf('image/') !== -1) {
             var blob = ele[i].getAsFile();
@@ -429,36 +409,36 @@ window.onload = function () {
             document.getElementById('chat-message-input').appendChild(new_img);
           });
         }
-      }
-    } else {
-    alert('您的浏览器不支持粘贴图片功能,请换更高版本浏览器.');
-    }
-  }
-  document.getElementById('chat-message-input').onpaste = function () {
-    paste_img(event);
-    return false;
-  };
-}
-function convertImgToBase64(url, callback, outputFormat){
-  var canvas = document.createElement('CANVAS'),
-  ctx = canvas.getContext('2d'),
-  img = new Image;
-  img.crossOrigin = 'Anonymous';
-  img.onload = function(){
-  canvas.height = img.height;
-  canvas.width = img.width;
-  ctx.drawImage(img,0,0);
-  var dataURL = canvas.toDataURL(outputFormat || 'image/png');
-  callback.call(this, dataURL);
-  canvas = null;
-};
-img.src = url;
-}
+        }
+        } else {
+        alert('您的浏览器不支持粘贴图片功能,请换更高版本浏览器.');
+        }
+        }
+        document.getElementById('chat-message-input').onpaste = function () {
+        paste_img(event);
+        return false;
+        };
+        }
+        function convertImgToBase64(url, callback, outputFormat){
+        var canvas = document.createElement('CANVAS'),
+        ctx = canvas.getContext('2d'),
+        img = new Image;
+        img.crossOrigin = 'Anonymous';
+        img.onload = function(){
+        canvas.height = img.height;
+        canvas.width = img.width;
+        ctx.drawImage(img,0,0);
+        var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+        callback.call(this, dataURL);
+        canvas = null;
+        };
+        img.src = url;
+        }
 
-function handle_emoji(msg){
-    chat_msg = "";
-    for (var a=0; a<msg.length; a++){
-      var msg_split = msg[a].split("]")
+        function handle_emoji(msg){
+        chat_msg = "";
+        for (var a=0; a<msg.length; a++){
+        var msg_split = msg[a].split("]")
         if (msg_split.length == 1){
           var chat_msg = chat_msg + msg[a]
         }else{
@@ -483,38 +463,39 @@ function handle_emoji(msg){
             }
           }
         }
-    }
-    return chat_msg
-}
+        }
+        return chat_msg
+        }
 
-function gen_chat_div(data){
-  if (data["username"] == "{{ username }}"){
-    if (data["message"].split(",")[0] == "file"){
-      var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
-    }else{
-      var msg = data["message"].split("[/");
-      if (msg.length == 1){
-        var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + data["message"] +'</span></div>'
-      }else{
+        function gen_chat_div(data){
+        if (data["username"] == "{{ username }}"){
+        if (data["message"].split(",")[0] == "file"){
+        var chat_div = '<div class="btalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="btalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"><\/div>'
+        }else{
+        var msg = data["message"].split("[/");
+        if (msg.length == 1){
+        var chat_div = '<div class="btalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="btalk"><span>' + data["message"] +'<\/span><\/div>'
+        }else{
         chat_msg = handle_emoji(msg)
-        var chat_div = '<div class="btalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="btalk"><span>' + chat_msg +'</span></div>'
-      }
-    }
-  }else{
-    if (data["message"].split(",")[0] == "file"){
-      var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"></div>'
-    }else{
-      var msg = data["message"].split("[/");
-      if (msg.length == 1){
-        var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + data["message"] +'</span></div>'
-      }else{
+        var chat_div = '<div class="btalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="btalk"><span>' + chat_msg +'<\/span><\/div>'
+        }
+        }
+        }else{
+        if (data["message"].split(",")[0] == "file"){
+        var chat_div = '<div class="atalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="atalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"><\/div>'
+        }else{
+        var msg = data["message"].split("[/");
+        if (msg.length == 1){
+        var chat_div = '<div class="atalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="atalk"><span>' + data["message"] +'<\/span><\/div>'
+        }else{
         chat_msg = handle_emoji(msg)
-          var chat_div = '<div class="atalk"><b>' + data["username"] + "</b> " + data["datetime"] + '</div><div class="atalk"><span>' + chat_msg +'</span></div>'
-      }
-    }
-  }
-  return chat_div
-}
+          var chat_div = '<div class="atalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="atalk"><span>' + chat_msg +'<\/span><\/div>'
+        }
+        }
+        }
+        return chat_div
+        }
 
-                      </script>
-                    </html>
+        </script>
+    </body>
+</html>
