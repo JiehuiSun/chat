@@ -114,8 +114,6 @@
   border-color: #eb7350;
   }
   </style>
-  <!-- <script type="text/javascript" src="/static/weibo/jquery-emoticons/public/script/jquery.min.js"></script> -->
-  <!-- <script type="text/javascript" src="/static/weibo/jquery-emoticons/code/jquery.emoticons.js"></script> -->
 
 
           <style type="text/css">
@@ -311,18 +309,6 @@
           $(".widget-layer").remove()
     }
     };
-    <!-- $(".emoji-img").live("click", function() { -->
-      <!-- console.log("aaaaaaa") -->
-
-        <!-- }); -->
-
-    <!-- $(".emoji-img").on("click", "img" add_emoji); -->
-
-    <!-- function add_emoji() { -->
-      <!-- console.log("aaaaaaa") -->
-      <!-- var emoji = this.title; -->
-
-    <!-- }; -->
 
         </script>
 
@@ -331,34 +317,6 @@
                     </div>
                     </div>
 
-<!-- #### -->
-<!-- <div class="header"> -->
-
-<!-- </div> -->
-<!-- <div class="main"> -->
-<!-- <div class="emoticons"> -->
-<!-- <div class="publisher"> -->
-<!-- <p><textarea name="content"></textarea></p> -->
-<!-- <p><a class="trigger" href="javascript:;">☺</a></p> -->
-<!-- </div> -->
-<!-- <div style="text-align:right;"><button id="format">解析</button></div> -->
-<!-- <div id="result" class="result"></div> -->
-<!-- </div> -->
-
-<script>
-
-
-<!-- $.emoticons({ -->
-<!-- 'activeCls':'trigger-active' -->
-<!-- },function(api){ -->
-<!-- var $content = $('textarea[name="content"]'); -->
-<!-- var $content = $('div[class="editor"]'); -->
-<!-- var $result = $('#result'); -->
-<!-- $('#format').click(function(){ -->
-<!-- $result.html(api.format($content.val())); -->
-                                    <!-- }); -->
-                    <!-- }); -->
-</script>
 </div>
 
                       </body>
@@ -505,11 +463,7 @@ function handle_emoji(msg){
           var chat_msg = chat_msg + msg[a]
         }else{
           var null_count = 0;
-          console.log("msg: ", msg)
-          console.log("msg_split: ", msg_split)
           for (var j=0; j<msg_split.length; j++){
-            console.log("aaa: ", msg_split[j])
-            console.log("index: ", j)
             <!-- 判断是否是表情 -->
             var emoji_chat_img = ""
             var is_emoji = 0;
