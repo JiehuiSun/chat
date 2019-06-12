@@ -5,10 +5,34 @@
             Chat Room
         </title>
         <link rel="shortcut icon" href="/static/weibo/jquery-emoticons/public/image/favicon.png">
-        <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/cssreset-min.css">
-        <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/common.css">
+        <!-- <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/cssreset-min.css"> -->
+        <!-- <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/common.css"> -->
         <style type="text/css">
-.emoticons{
+          ul {
+            list-style:none
+          }
+          .big_img {
+            <!-- opacity : 0.9; -->
+            <!-- width: 100%; -->
+            <!-- height: 800px; -->
+            margin:0 auto;
+          }
+          #img-close {
+            width: 12px;
+            position: fixed !important;
+            top: 20%;
+            left: 50%;
+            margin-left: 240px;
+            margin-top: -20px;
+          }
+          #msg_image{
+            width: 500px;
+            position: fixed !important;
+            top: 20%;
+            left: 50%;
+            margin-left: -250px;
+          }
+        .emoticons{
         width: 525px;
         margin-bottom:20px;
         }
@@ -273,8 +297,9 @@
         li.attr("class", "emoji-img");
         li.attr("title", options.list[i]["title"]);
         li.bind("click", function(){
-            var emoji_chat = "[/" + this.title + "]"
-            $("#chat-message-input").append(emoji_chat)
+            var emoji_chat = "[/" + this.title + "]";
+            $("#chat-message-input").append(emoji_chat);
+            $(".widget-layer").remove();
             })
         li.append(img)
         ul.append(li)
@@ -284,10 +309,14 @@
         var panel = $("<div>")
         var tool = $("<div>")
         var close_x = $("<a>")
-        close_x.html = "X"
+        close_x.text("X")
         close_x.attr("class", "widget-close")
         close_x.attr("href", "javascript:;")
         close_x.attr("title", "关闭")
+        close_x.bind("click", function(){
+            $(".widget-layer").remove();
+            })
+
 
         tool.append(close_x)
         tool.attr("class", "widget-tool")
@@ -495,6 +524,30 @@
         }
         return chat_div
         }
+
+        <!-- 图片放大 -->
+        $("body").delegate(".msg_img", "click", function(){
+            console.log("aaaa")
+            var img_div = $("<div>");
+            img_div.attr("class", "big_img");
+            img_div.bind("click", function(){
+                $(".big_img").remove();
+                })
+            var p = $("<p>")
+            p.attr("id", "img-close")
+            var p1 = $("<p>")
+            var a = $("<a>")
+            a.text("X")
+            a.attr("href", "#")
+            p.append(a)
+            var img = $("<img>")
+            img.attr("src", this.src)
+            img.attr("id", "msg_image")
+            p1.append(img)
+            img_div.append(p)
+            img_div.append(p1)
+            $("body").append(img_div)
+            })
 
         </script>
     </body>
