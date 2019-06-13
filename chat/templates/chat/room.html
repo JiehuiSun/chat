@@ -9,6 +9,11 @@
         <!-- <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/cssreset-min.css"> -->
         <!-- <link rel="stylesheet" type="text/css" href="/static/weibo/jquery-emoticons/public/style/common.css"> -->
         <style type="text/css">
+          .file-close{
+            margin-left: 5px;
+          }
+          .msg_file{
+          }
           .fileDiv{
             background: #cecece;
             display: inline-block;
@@ -438,13 +443,15 @@
               })
             }
             var file_list = document.getElementById("upload-file").files;
-            var formdata = new FormData();
+            console.log(file_list.length)
             for (var i=0; i<file_list.length; i++) {
+              var formdata = new FormData();
               formdata.append("file", file_list[i]);
               var fileData = uploadFile(formdata)
 
               var filePath = fileData["file_path"]
-              var message = "file:," + filePath
+              var fileName = fileData["file_name"]
+              var message = "file:," + filePath + "," + fileName
               <!-- chatSocket.send(JSON.stringify({ -->
                           <!-- 'message': "file:," + filePath -->
                           <!-- })); -->
@@ -456,6 +463,7 @@
                               'message': message
                                       }));}
             messageInputDom.innerText = '';
+            $(".file-a").remove();
         };
 
         <!-- ##################################### -->
@@ -535,32 +543,46 @@
         }
 
         function gen_chat_div(data){
+          var chat_div = document.createElement("div");
+          chat_div.innerHTML = '<div><b>' + data["username"] + "<\/b> " + data["datetime"] + '</div>'
+        if (data["message"].split(",")[0] == "img:"){
+          // handle image
+          chat_div.innerHTML = chat_div.innerHTML + '<div><img class="msg_img" src="' + data["message"].split(",")[1] + '">'
+        }else if (data["message"].split(",")[0] == "file:"){
+          // handle video
+          var file_tag = '<a class="msg_file" href="' + data["message"].split(",")[1] + '" download="' + data["message"].split(",")[2] + '">';
+          var file_ext = data["message"].split(",")[2].split(".")[1];
+          var file_icon;
+          if (file_ext == "jpg" || file_ext == "png"){
+            var file_icon = "http://www.icosky.com/icon/ico/File%20Type/Crystal%20Project%20Mimetypes/image.ico"
+          }else if(file_ext == "mp4" || file_ext == "avi"){
+            var file_icon = "http://www.icosky.com/icon/ico/File%20Type/Crystal%20Project%20Mimetypes/video.ico"
+          }else{
+            var file_icon = "http://www.icosky.com/icon/ico/File%20Type/Crystal%20Project%20Mimetypes/info.ico"
+          }
+          file_tag = file_tag + '<div style="display: inline-block;"><img width="60px" src="' + file_icon + '">' + data["message"].split(",")[2] + '</div>'
+          chat_div.innerHTML = chat_div.innerHTML + file_tag
+
+        }else{
+          // handle texts
+          var msg = data["message"].split("[/");
+          if (msg.length == 1){
+            // handle text_all
+            chat_div.innerHTML = chat_div.innerHTML + '<div><span>' + data["message"] +'</span>'
+          }else{
+            // handle have emoji texts
+            chat_msg = handle_emoji(msg)
+            chat_div.innerHTML = chat_div.innerHTML + '<div class="btalk"><span>' + chat_msg +'</span>'
+          }
+        }
         if (data["username"] == "{{ username }}"){
-        if (data["message"].split(",")[0] == "img:"){
-        var chat_div = '<div class="btalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="btalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"><\/div>'
+          chat_div.setAttribute("class", "btalk")
         }else{
-        var msg = data["message"].split("[/");
-        if (msg.length == 1){
-        var chat_div = '<div class="btalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="btalk"><span>' + data["message"] +'<\/span><\/div>'
-        }else{
-        chat_msg = handle_emoji(msg)
-        var chat_div = '<div class="btalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="btalk"><span>' + chat_msg +'<\/span><\/div>'
+          chat_div.setAttribute("class", "atalk")
         }
-        }
-        }else{
-        if (data["message"].split(",")[0] == "img:"){
-        var chat_div = '<div class="atalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="atalk"><img class="msg_img" src="' + data["message"].split(",")[1] + '"><\/div>'
-        }else{
-        var msg = data["message"].split("[/");
-        if (msg.length == 1){
-        var chat_div = '<div class="atalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="atalk"><span>' + data["message"] +'<\/span><\/div>'
-        }else{
-        chat_msg = handle_emoji(msg)
-          var chat_div = '<div class="atalk"><b>' + data["username"] + "<\/b> " + data["datetime"] + '<\/div><div class="atalk"><span>' + chat_msg +'<\/span><\/div>'
-        }
-        }
-        }
-        return chat_div
+        var chatDiv = document.createElement("div");
+        chatDiv.append(chat_div)
+        return chatDiv.innerHTML
         }
 
         <!-- 图片放大 -->
@@ -596,8 +618,15 @@
 function add_file(e){
   var file_div = $("<div>")
   file_div.text(e)
+  var file_close = $("<div>")
+  <!-- file_close.text("X") -->
+  file_close.attr("class", "file-close glyphicon glyphicon-remove")
   file_div.attr("class", "fileDiv")
-  $("#chat-file").append(file_div)
+  var tmp_div = $("<div>")
+  tmp_div.attr("class", "file-a")
+  tmp_div.append(file_div)
+  tmp_div.append(file_close)
+  $("#chat-file").append(tmp_div)
   <!-- ####,cc -->
   <!-- var formdata = new FormData(); -->
   <!-- formdata.append("file", $('.fileDiv')[0].files[0]); -->
@@ -626,6 +655,13 @@ function uploadFile(e) {
   return ret
 
 }
+
+$("body").delegate(".file-close", "click", function(){
+  var obj = document.getElementById('upload-file');
+  obj.outerHTML=obj.outerHTML;
+  $(this).parent().remove()
+    });
+
 
         </script>
     </body>

@@ -77,24 +77,27 @@ def user_login(request):
     return HttpResponse(json.dumps(ret, ensure_ascii=False), content_type = "application/json")
 
 def upload(request):
-    file=request.FILES['file']
-    file_name="{0}_{1}".format("file", int(time.time()))
+    if request.FILES:
+        file=request.FILES['file']
+    else:
+        file=request.files['file']
+
+    file_name="{0}_{1}".format(file.name, int(time.time()))
     file_path = save_to_local(file, file_name)
     ret = {
         'code': 0,
         'msg': 'ok',
-        'data': {"file_path": file_path}
+        'data': {"file_path": file_path, "file_name": file.name}
     }
     return HttpResponse(json.dumps(ret, ensure_ascii=False), content_type = "application/json")
 
 
 def save_to_local(file,file_name):
-    file_path = "static/image/" + file_name + ".png"
+    file_path = "static/image/" + file_name
     default_storage.save(file_path, ContentFile(file.read()))
     return "/" + file_path
 
 def image(req, filename):
-    print(filename)
     filepath = []
     with open("static/image/" + filename + ".png", 'r') as f:
         for line in f.readlines():
